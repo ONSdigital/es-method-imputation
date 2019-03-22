@@ -3,6 +3,13 @@ language: python
 python:
   - "3.5"
 # command to install dependencies
+env:
+  global:
+    - OWNER=alg-owner
+    - ALGORITHM_NAME=concise-alg-name
+    - ALGORITHMIA_USER=travis
+    - ES_ALGORITHMIA_API_ADDRESS=algo-url
+    - ES_ALGORITHM_DESCRIPTOR=$OWNER/$ALGORITHM_NAME/$TRAVIS_COMMIT
 install:
   - pip install -r requirements.txt
 # command to run tests
@@ -11,13 +18,13 @@ script:
 deploy:
   - provider: script
     skip_cleanup: true
-    script: bash scripts/deploy.sh -a $algo_name -u $algo_user -p $algo_password
+    script: bash scripts/deploy.sh -a $ALGORITHM_NAME -u $ALGORITHMIA_USER -p $ALGORITHMIA_PASSWORD
     on:
       branch: master
       tags: false
   - provider: script
     skip_cleanup: true
-    script: bash scripts/publish.sh -a $algo_name -k $algo_key -t $TRAVIS_TAG -g $TRAVIS_REPO_SLUG
+    script: bash scripts/publish.sh -a $ALGORITHM_NAME -k $ES_ALGORITHMIA_API_KEY -t $TRAVIS_TAG -g $TRAVIS_REPO_SLUG
     on:
       branch: master
       tags: true
