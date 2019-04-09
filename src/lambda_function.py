@@ -5,8 +5,9 @@ from io import StringIO
 
 client = boto3.client('s3')
 client_out = boto3.resource('s3')
-bucket_name = 'es-bmi-imputation'
-input_data = 'impute_input_data.csv'
+bucket_name = 'es-algo-poc'
+input_csv = 'enrichment_output.csv'
+output_csv = 'imputation_output.csv'
 
 
 def _get_traceback(exception):
@@ -27,13 +28,13 @@ def lambda_handler(event, context):
         # Not sure where period will be picked up from - hard coded for now. - DF
         period = 201809
 
-        input_obj = client.get_object(Bucket=bucket_name, Key=input_data)
+        input_obj = client.get_object(Bucket=bucket_name, Key=input_csv)
         input_body = input_obj['Body']
         input_string = input_body.read().decode('utf-8')
 
         input_df = pd.read_csv(StringIO(input_string))
 
-        imputed_df = do_imputation(input_df,period)
+        imputed_df = do_imputation(input_df, period)
 
     except Exception as exc:
         return {
@@ -44,7 +45,7 @@ def lambda_handler(event, context):
     csv_buffer = StringIO()
     _buffering = imputed_df.to_csv(csv_buffer)
 
-    client_out.Object(bucket_name, 'imputation_output.csv').put(Body=csv_buffer.getvalue())
+    client_out.Object(bucket_name, output_csv).put(Body=csv_buffer.getvalue())
 
     lambda_retval = {"success": True}
 
