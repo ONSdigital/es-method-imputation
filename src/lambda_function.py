@@ -95,9 +95,9 @@ def check_non_response(data, period):
         # picked up
         data = data[data['response_type'] == 2]
         # Select and order the columns required for imputation.
-        ordered_data = data[['responder_id', 'land_or_marine', 'region', 'strata', 'Q601_asphalting_sand',
-                             'Q602_building_soft_sand', 'Q603_concreting_sand', 'Q604_bituminous_gravel',
-                             'Q605_concreting_gravel', 'Q606_other_gravel',
+        ordered_data = data[['responder_id', 'enterprise_ref', 'land_or_marine', 'region', 'strata',
+                             'Q601_asphalting_sand', 'Q602_building_soft_sand', 'Q603_concreting_sand',
+                             'Q604_bituminous_gravel', 'Q605_concreting_gravel', 'Q606_other_gravel',
                              'Q607_constructional_fill', 'Q608_total', 'period'
                              ]]
         return ordered_data
