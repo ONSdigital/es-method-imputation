@@ -43,7 +43,7 @@ def lambda_handler(event, context):
         }
 
     csv_buffer = StringIO()
-    _buffering = imputed_df.to_csv(csv_buffer)
+    _buffering = imputed_df.to_csv(csv_buffer, index=False)
 
     client_out.Object(bucket_name, output_csv).put(Body=csv_buffer.getvalue())
 
@@ -80,7 +80,7 @@ def do_imputation(input_df, period):
 
     # Do the last thing
 
-    return responder_data  # .to_json(orient='records')
+    return responder_data
 
 
 def check_non_response(data, period):
@@ -95,10 +95,10 @@ def check_non_response(data, period):
         # picked up
         data = data[data['response_type'] == 2]
         # Select and order the columns required for imputation.
-        ordered_data = data[['responder_id', 'enterprise_ref', 'land_or_marine', 'region', 'strata',
-                             'Q601_asphalting_sand', 'Q602_building_soft_sand', 'Q603_concreting_sand',
+        ordered_data = data[['responder_id', 'enterprise_ref', 'period', 'response_type', 'land_or_marine', 'region',
+                             'strata', 'Q601_asphalting_sand', 'Q602_building_soft_sand', 'Q603_concreting_sand',
                              'Q604_bituminous_gravel', 'Q605_concreting_gravel', 'Q606_other_gravel',
-                             'Q607_constructional_fill', 'Q608_total', 'period'
+                             'Q607_constructional_fill', 'Q608_total'
                              ]]
         return ordered_data
     else:
